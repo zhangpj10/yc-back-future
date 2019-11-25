@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <settings>
+        <setting name="jdbcTypeForNull" value="NULL" />
+        <!-- 打印查询语句 -->
+        <setting name="logImpl" value="STDOUT_LOGGING" />
+    </settings>
+    <!--<plugins>-->
+        <!--&lt;!&ndash;具体的实现类  &ndash;&gt;-->
+        <!--<plugin interceptor="com.common.mybatis.pagePlugn.PageInterceptor">-->
+            <!--&lt;!&ndash; 使用mysql &ndash;&gt;-->
+            <!--<property name="dialect" value="mysql" />-->
+            <!--&lt;!&ndash;拦截的方法  &ndash;&gt;-->
+            <!--<property name="pageSqlId" value=".*ByPage.*" />-->
+        <!--</plugin>-->
+    <!--</plugins>-->
+</configuration>

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:security="http://www.springframework.org/schema/security"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/security https://www.springframework.org/schema/security/spring-security.xsd">
+
+    <security:http use-expressions="true">
+        <!-- 顺序不能乱 ，按照从上往下依次过滤 -->
+                <!-- 默认不过滤的url（不需要登录） -->
+                <security:intercept-url pattern="/login/index" access="permitAll"/>
+                <security:intercept-url pattern="/login/login" access="permitAll"/>
+        <!--<security:intercept-url pattern="/login/login" access="permitAll"/>-->
+                <!--<security:intercept-url pattern="/cs/404.html" access="permitAll"/>-->
+                <!--<security:intercept-url pattern="/favicon.ico" access="permitAll"/>--><!--过滤浏览器自动发起的链接-->
+
+
+                <!-- 除/admin/*（web.xml中）和permitAll外，任何url都要拦截 -->
+                <security:intercept-url pattern="/**" access="authenticated"/>
+
+
+                <!-- 登录认证 -->
+                <security:form-login login-page="/login/index"
+                                     authentication-failure-url="/login/loginfailed"
+                                     username-parameter="username"
+                                     password-parameter="password"
+                                     default-target-url="/"
+                                     always-use-default-target="false" />
+                <!--暂且屏蔽后面角色分配用<security:custom-filter after="FILTER_SECURITY_INTERCEPTOR" ref="filterUrl"/>-->
+                <!-- logout-success-url:成功注销后跳转到的页面; -->
+                <security:logout logout-url="/login/logout" logout-success-url="/mainPage/index"/>
+                <!-- session管理，invalid-session-url重定向，指定使用已经超时的sessionId进行请求需要重定向的页面-->
+                <security:session-management invalid-session-url="/ps_service/login.do"/>
+    </security:http>
+
+
+        <!-- 启用注解 -->
+        <security:global-method-security pre-post-annotations="enabled"/>
+        
+        <!-- 安全认证管理，先写个简单的后面再改-->
+        
+        <security:authentication-manager>
+             <security:authentication-provider>
+                 <security:user-service>
+                     <security:user name="admin" password="123456" authorities="ROLE_USER"/><!--设置登录的用户名和密码-->
+                 </security:user-service>
+             </security:authentication-provider>
+        </security:authentication-manager>
+        
+        <!-- 安全认证管理，这里用了数据库，后面再用 -->
+        <!--<security:authentication-manager>
+        <security:authentication-provider ref="filterLogin"/>
+    </security:authentication-manager>
+
+
+    <bean id="filterLogin" class="com.suning.search.admin.web.controller.authority.FilterLogin"/>
+
+
+    <bean id="filterUrl" class="com.suning.search.admin.web.controller.authority.FilterUrl"/>-->
+</beans>

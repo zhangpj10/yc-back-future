@@ -1,0 +1,4 @@
+rootProject.name = 'yc-future'
+include 'yc-src'
+//include 'web-src'
+

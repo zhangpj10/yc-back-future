@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:security="http://www.springframework.org/schema/security"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/security https://www.springframework.org/schema/security/spring-security.xsd">
+
+    <!--相关配置连接：https://www.cnblogs.com/wwff/p/10099094.html-->
+    <!--不需要认证的页面, 静态资源-->
+    <security:http pattern="/login.ftl" security="none"/>
+    <security:http pattern="/test" security="none"/>
+    <security:http pattern="/css/**" security="none"/>
+    <security:http pattern="/img/**" security="none"/>
+    <security:http pattern="/plugins/**" security="none"/>
+
+    <!--
+    security:http: 拦截请求配置
+    auto-config: 这个是一个自动配置过滤器(Filter)的属性, 设置为true，security框架帮我创建login页面，login处理方法
+    use-expressions:"是否使用spring 的el表达式"，如果使用表达式true：access="hasRole('ROLE_USER')"
+    -->
+    <!--<security:http auto-config="true" use-expressions="false">-->
+    <!-- 配置拦截的请求地址，pattern=/**代表拦截所有请求，
+    access=ROLE_USER，即访问的用户必须有ROLE_USER的角色才可访问
+    ROLE_USER写法，ROLE_自定义,须以ROLE_为前缀, 多个以逗号分割,或者
+    -->
+    <!--<security:intercept-url pattern="/**" access="ROLE_USER" />-->
+
+
+    <!--登陆相关的配置
+            username-parameter: 登陆请求中发送过来的用户名称的参数名
+            password-parameter: 登陆请求中发送过来的密码的参数名
+            login-processing-url: 登陆请求处理的地址，由security处理，帮我们生成好了
+            login-page: 配置自定义登陆页面 /
+            default-target-url: 登陆成功后默认跳转页面
+            authentication-failure-url: 登陆失败后跳转的页面
+            always-use-default-target: 不管原来访问的是哪个页面，登陆成功后都跳转到default-target-url
+        -->
+    <security:http use-expressions="true">
+        <security:form-login
+                username-parameter="username"
+                password-parameter="password"
+                login-page="/login/index.ftl"
+                default-target-url="/mainPage/index"
+                authentication-failure-url="/login/failure"
+
+        ></security:form-login>
+        <!-- 退出登陆的配置
+            logout-url: 退出请求的处理
+            logout-success-url: 退出成功后跳转的页面
+            invalidate-session: 让session失效
+            -->
+        <security:logout logout-url="/logout/index" invalidate-session="true"></security:logout>
+    </security:http>
+
+
+    <!--关闭跨域请求限制-->
+    <!--<security:csrf disabled="true"/>-->
+
+    <!--<security:http use-expressions="true">-->
+    <!--<security:intercept-url pattern="/leshuo/index" access="permitAll"/>-->
+    <!--<security:intercept-url pattern="/test" access="permitAll"/>-->
+    <!-- 除/admin/*（web.xml中）和permitAll外，任何url都要拦截 -->
+    <!--<security:intercept-url pattern="/**" access="authenticated"/>-->
+    <!-- session管理，invalid-session-url重定向，指定使用已经超时的sessionId进行请求需要重定向的页面-->
+    <!--<security:session-management invalid-session-url="/ps_service/login.do"/>-->
+    <!--</security:http>-->
+    <!-- 启用注解 -->
+    <security:global-method-security pre-post-annotations="enabled"/>
+    <!-- 安全认证管理，先写个简单的后面再改-->
+    <security:authentication-manager>
+        <security:authentication-provider>
+            <security:user-service>
+                <security:user name="admin" password="1" authorities="ROLE_USER"/><!--设置登录的用户名和密码-->
+            </security:user-service>
+        </security:authentication-provider>
+    </security:authentication-manager>
+
+    <!--使用security自带的加密算法-->
+    <bean id="bCryptPasswordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder"></bean>
+    <!-- 安全认证管理，这里用了数据库，后面再用 -->
+    <!--<security:authentication-manager>
+    <security:authentication-provider ref="filterLogin"/>
+    </security:authentication-manager>
+    <bean id="filterLogin" class="com.suning.search.admin.web.controller.authority.FilterLogin"/>
+    <bean id="filterUrl" class="com.suning.search.admin.web.controller.authority.FilterUrl"/>-->
+</beans>

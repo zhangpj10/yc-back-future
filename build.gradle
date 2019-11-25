@@ -1,0 +1,46 @@
+group 'com.yc'
+version '1.0-SNAPSHOT'
+
+allprojects {
+    apply plugin: 'idea'
+}
+subprojects {
+    apply plugin: 'java'
+    compileJava {
+        //enable incremental compilation
+        options.incremental = true
+    }
+    // 统一编码: UTF-8
+    [compileJava, compileTestJava, javadoc]*.options*.encoding = 'UTF-8'
+
+    // JDK 1.7
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+
+    repositories {
+//        maven {
+//            url 'http://192.168.17.223:8085/repository/maven-public/'
+//        }
+        maven {
+            url 'http://maven.aliyun.com/nexus/content/groups/public/'
+        }
+//        mavenLocal()
+        mavenCentral()
+    }
+
+    // 各模块共用的依赖(除了 web-src 前端模块)
+    if(!project.name.equals('web-src')) {
+        dependencies {
+            //    和Maven类似，gradle导入依赖包也可以定义其作用的生命周期：
+            //    compile：编译时必须。
+            //    runtime：运行时必须，包括编译时。
+            //    testCompile：测试编译时必须。
+            //    testRuntime：测试运行时必须，包括编译时。
+            //    注：此外配置依赖包，还可以模块化配置、导入list、配置是否传递等。
+
+            // LOGGING
+
+            //TEST
+        }
+    }
+}

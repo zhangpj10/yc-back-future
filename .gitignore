@@ -1,0 +1,5 @@
+.DS_Store
+.gradle
+.idea
+/yc-src/build
+/yc-src/src/buildedWebContent
